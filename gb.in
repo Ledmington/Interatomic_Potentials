@@ -4,35 +4,38 @@ dimension 3
 atom_style ellipsoid
 boundary p p p
 
-
 # 2) System definition
 region simbox block -20 20 -20 20 -20 20
 create_box 2 simbox
+
 create_atoms 1 random 1500 34134 simbox overlap 0.3
 
+set type 1 shape 3.0 1.0 1.0
 
-# 3) Settings
-pair_style gayberne 1.0 1.0 1.0 10.0
+# random initial orientations
+set group all quat/random 12345
+
+# -------------------------
+# Gay-Berne interaction
+# -------------------------
+pair_style gayberne 1.0 1.0 1.0 4.0
 pair_coeff * * 1.0 1.7 1.7 3.4 3.4 1.0 1.0 1.0
 
-
 # 4) Monitoring
-thermo 10
-thermo_style custom step etotal press
-
-
-# 5) Run
-#run 0 post no
-minimize 1.0e-6 1.0e-6 1000 10000
-
 
 thermo 50
 thermo_style custom step temp etotal pe ke press
+
 dump mydmp all atom 100 gb.lammpstrj
 
-fix mynve all nve/asphere
+# 5) Minimize
+
+minimize 1e-6 1e-6 1000 10000
+
+# 6) Dynamics
+
+fix integrate all nve/asphere
+
 timestep 0.005
-run 50000
 
-
-
+run 10000
