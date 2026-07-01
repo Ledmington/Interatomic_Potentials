@@ -1,0 +1,49 @@
+# 1) Initialization
+units lj
+dimension 3
+atom_style ellipsoid
+boundary p p p
+
+# 2) System definition
+region simbox block -20 20 -20 20 -20 20
+create_box 2 simbox
+
+create_atoms 1 random 1500 34134 simbox overlap 0.3
+
+set type 1 shape 3.0 1.0 1.0
+
+# Random initial orientations
+set group all quat/random 12345
+
+# Give particles rotational inertia
+set type 1 density 1.0
+
+# 3) Interaction
+pair_style gayberne 1.0 1.0 1.0 4.0
+pair_coeff * * 1.0 1.7 1.7 3.4 3.4 1.0 1.0 1.0
+
+neighbor 0.5 bin
+neigh_modify delay 0 every 1
+
+# 4) Monitoring
+thermo 100
+thermo_style custom step temp pe ke etotal press
+
+#dump traj all custom 100 gb.lammpstrj id type x y z quatw quati quatj quatk
+#dump traj all custom 100 gb.lammpstrj id type x y z quat
+dump traj all custom 100 gb.lammpstrj id type x y z c_q
+
+# 5) Minimize
+minimize 1e-6 1e-6 1000 10000
+
+# 6) Initial velocities
+velocity all create 2.0 12345 mom yes rot yes dist gaussian
+
+timestep 0.005
+
+# 7) Annealing
+fix anneal all nvt/asphere temp 2.0 0.1 1.0
+
+run 50000
+
+unfix anneal
