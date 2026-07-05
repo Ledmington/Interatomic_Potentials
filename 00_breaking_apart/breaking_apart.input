@@ -21,7 +21,7 @@ thermo 10
 thermo_style custom step epair etotal press vol
 
 compute      0 all property/atom quatw quati quatj quatk shapex shapey shapez
-dump mydump all custom 100 gb_base.lammpstraj id type x y z c_0[*]
+dump mydump all custom 100 breaking_apart.lammpstraj id type x y z c_0[*]
 dump_modify mydump colname c_0[1] quatw colname c_0[2] quati colname c_0[3] quatj colname c_0[4] quatk &
               colname c_0[5] shapex colname c_0[6] shapey colname c_0[7] shapez
 
