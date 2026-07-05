@@ -83,7 +83,7 @@ def main():
     # Renderer selection
     renderer = OpenGLRenderer() if args.renderer == "opengl" else OpenGLRenderer()
 
-    print(f"Rendering {frame_start} -> {frame_end} to {args.output}")
+    print(f"Rendering from frame {frame_start} to frame {frame_end} to {args.output}")
 
     vp.render_anim(
         size=(args.width, args.height),
