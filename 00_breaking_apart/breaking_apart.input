@@ -1,0 +1,32 @@
+units lj
+atom_style ellipsoid
+dimension 2
+boundary p p p
+
+region       myregion block 0 300 0 300 -1 1
+create_box   1 myregion
+#create_atoms 1 random 10000 123456 myregion overlap 3.0
+lattice      sq 0.02
+create_atoms 1 box
+
+set          type 1 shape 3 1 1
+set          group all quat/random 123456
+
+pair_style   gayberne 1.0 3.0 1.0 4.0
+pair_coeff   1 1 1.0 1.0 1 1 0.2 0 0 0
+
+neighbor     0.1 bin
+
+thermo 10
+thermo_style custom step epair etotal press vol
+
+compute      0 all property/atom quatw quati quatj quatk shapex shapey shapez
+dump mydump all custom 100 gb_base.lammpstraj id type x y z c_0[*]
+dump_modify mydump colname c_0[1] quatw colname c_0[2] quati colname c_0[3] quatj colname c_0[4] quatk &
+              colname c_0[5] shapex colname c_0[6] shapey colname c_0[7] shapez
+
+minimize 1e-6 1e-8 1000 10000
+
+fix mynve all nve/asphere
+timestep 0.005
+run 50000
