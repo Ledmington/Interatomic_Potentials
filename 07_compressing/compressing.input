@@ -1,0 +1,54 @@
+units lj
+atom_style ellipsoid
+dimension 2
+boundary p p p
+
+region       myregion block 0 300 0 300 -1 1
+create_box   1 myregion
+lattice      sq 0.1
+create_atoms 1 box
+
+set          type 1 shape 3 1 1
+set          group all quat/random 123456
+
+pair_style   gayberne 1.0 3.0 1.0 10.0
+pair_coeff   * * 1.0 1.7 1.7 3.4 3.4 1.0 1.0 1.0
+
+neighbor     1.0 bin
+
+thermo 10
+thermo_style custom step pe etotal press
+
+compute      mycompute all property/atom quatw quati quatj quatk shapex shapey shapez
+dump mydump all custom 100 compressing.lammpstraj id type x y z c_mycompute[*]
+dump_modify mydump &
+            colname c_mycompute[1] quatw &
+            colname c_mycompute[2] quati &
+            colname c_mycompute[3] quatj &
+            colname c_mycompute[4] quatk &
+            colname c_mycompute[5] shapex &
+            colname c_mycompute[6] shapey &
+            colname c_mycompute[7] shapez
+
+minimize 1e-6 1e-8 1000 10000
+
+thermo 100
+thermo_style custom step temp pe etotal press
+
+timestep 0.001
+
+fix mynve all nve/asphere
+run 10000
+unfix mynve
+
+fix mynpt all npt/asphere temp 0.01 0.01 $(100.0*dt) iso 0 0 $(100.0*dt)
+run 10000
+unfix mynpt
+
+fix mynvt all nvt/asphere temp 0.5 0.01 $(100.0*dt)
+run 10000
+unfix mynvt
+
+fix mynve all nve/asphere
+run 10000
+unfix mynve
