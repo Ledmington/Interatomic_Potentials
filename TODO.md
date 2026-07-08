@@ -7,5 +7,7 @@ Not sorted by priority nor importance
   - experimental setup (2 simulations: one just to see blobs/droplets and one to see phase transition, maybe one with mixed particles?)
   - comparison of results
   - conclusions
-- Find proper value for gayberne potential in LAMMPS
-- Find proper cutoff value for gayberne potential in LAMMPS
+
+- aggiungere simulazione "mista" lj e gb per mostrare interazioni tra le due?
+- aggiungere simulazione in cui, a parita' di parametri, cambiando la forma delle particles si ottiene lj
+
