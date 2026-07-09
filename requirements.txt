@@ -1,4 +1,5 @@
 asttokens==3.0.1
+bibtexparser==1.4.4
 black==26.5.1
 click==8.4.2
 comm==0.2.3
