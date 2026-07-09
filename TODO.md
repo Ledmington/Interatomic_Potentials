@@ -1,13 +1,12 @@
 Not sorted by priority nor importance
 
-- change 3d plots to be top-down views with "linee di livello" (tried and they are ugly)
 - structure project into:
   - introduction (what we are comparing what we will show)
   - theory background (divided into LJ, GB and comparison)
-  - experimental setup (2 simulations: one just to see blobs/droplets and one to see phase transition, maybe one with mixed particles?)
-  - comparison of results
+  - simulation: for each of the simulations divide into (what i want to accomplish, how i plan to accomplish it, how it translates into LAMMPS, execution, analysis of the results)
+    - one just to see blobs/droplets
+    - one to see phase transition (phase diagram)
   - conclusions
 
-- aggiungere simulazione "mista" lj e gb per mostrare interazioni tra le due?
 - aggiungere simulazione in cui, a parita' di parametri, cambiando la forma delle particles si ottiene lj
 
