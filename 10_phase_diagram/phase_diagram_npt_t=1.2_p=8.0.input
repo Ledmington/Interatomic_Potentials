@@ -1,0 +1,41 @@
+units lj
+atom_style ellipsoid
+dimension 2
+boundary p p p
+
+region       myregion block 0 60 0 60 -1 1
+create_box   1 myregion
+create_atoms 1 random 486 123456 myregion overlap 2.0
+
+set          type 1 shape 3.0 1 1
+set          group all quat/random 123456
+
+pair_style   gayberne 1.0 1.0 2.0 4.0
+pair_coeff   * *   1.0 1.0   5.0 5.0 1.0   5.0 5.0 1.0
+
+neighbor     1.0 bin
+
+thermo 10
+thermo_style custom step pe etotal
+
+compute      mycompute all property/atom quatw quati quatj quatk shapex shapey shapez
+dump mydump all custom 100 phase_diagram_npt_t=1.2_p=8.0.lammpstraj id type x y z c_mycompute[*]
+dump_modify mydump &
+            colname c_mycompute[1] quatw &
+            colname c_mycompute[2] quati &
+            colname c_mycompute[3] quatj &
+            colname c_mycompute[4] quatk &
+            colname c_mycompute[5] shapex &
+            colname c_mycompute[6] shapey &
+            colname c_mycompute[7] shapez
+
+minimize 1e-6 1e-8 1000 10000
+
+thermo 100
+thermo_style custom step temp pe etotal press vol density
+
+timestep 0.001
+
+fix mynpt all npt/asphere temp 1.2 1.2 $(100.0*dt) iso 8.0 8.0 $(1000.0*dt)
+run 100000
+unfix mynpt
