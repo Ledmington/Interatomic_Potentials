@@ -1,6 +1,23 @@
 import bibtexparser
 
 
+def get_first_author_surname(author_field):
+    """
+    Extract first author's surname from BibTeX author field.
+    Examples:
+    'Smith, John and Doe, Jane' -> 'Smith'
+    'John Smith and Jane Doe' -> 'Smith'
+    """
+    first_author = author_field.split(" and ")[0]
+
+    if "," in first_author:
+        surname = first_author.split(",")[0]
+    else:
+        surname = first_author.split()[-1]
+
+    return surname.strip()
+
+
 def format_authors(author_field):
     """
     Convert BibTeX author format:
@@ -22,7 +39,7 @@ def format_authors(author_field):
     return ", ".join(formatted)
 
 
-def format_reference(entry, number):
+def format_reference(entry):
     authors = format_authors(entry.get("author", "Unknown author"))
 
     title = entry.get("title", "Untitled")
@@ -35,7 +52,12 @@ def format_reference(entry, number):
 
     doi = entry.get("doi", "")
 
-    ref = f'{number}. {authors}. "{title}"'
+    # Citation key: Surname + Year
+    first_author = get_first_author_surname(entry.get("author", "Unknown"))
+
+    citation_key = f"{first_author}{year}"
+
+    ref = f'{citation_key}. {authors}. "{title}"'
 
     if journal:
         ref += f". *{journal}*"
@@ -51,17 +73,19 @@ def format_reference(entry, number):
     return ref
 
 
-def generate_bibliography(input_bib, output_md):
+def generate_bibliography(input_bib):
     with open(input_bib, encoding="utf-8") as f:
         bib = bibtexparser.load(f)
 
     references = []
 
-    for i, entry in enumerate(bib.entries, start=1):
-        references.append(format_reference(entry, i))
+    for entry in bib.entries:
+        references.append(format_reference(entry))
 
-    print("\n\n".join(references))
+    bibliography = "\n\n".join(references)
+
+    print(bibliography)
 
 
 if __name__ == "__main__":
-    generate_bibliography("main.bib", "bibliography.md")
+    generate_bibliography("main.bib")
