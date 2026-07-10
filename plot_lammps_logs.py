@@ -73,42 +73,42 @@ def read_lammps_log(filename):
 
 
 def plot_timeseries(df):
-
     if "Step" not in df.columns:
         raise RuntimeError("No Step column found")
 
     for column in df.columns:
-
         if column == "Step":
             continue
 
-        plt.figure(figsize=(7, 4))
+        filename = f"{column}.png"
 
+        plt.figure(figsize=(7, 4))
         plt.plot(df["Step"], df[column], linewidth=1)
 
         plt.xlabel("Step")
         plt.ylabel(column)
         plt.title(f"{column} vs Step")
-
-        plt.grid(True)
-
-        filename = f"{column}.png"
-
+        plt.grid(True, which="both")
         plt.tight_layout()
         plt.savefig(filename, dpi=300)
-
         plt.close()
 
         print("Saved:", filename)
 
 
 def main():
-
     parser = argparse.ArgumentParser(
         description="Plot all thermo quantities from LAMMPS log file"
     )
 
     parser.add_argument("logfile", help="LAMMPS log file")
+    parser.add_argument(
+        "-s",
+        "--min-step",
+        type=int,
+        default=None,
+        help="Ignore data points with Step < MIN_STEP",
+    )
 
     args = parser.parse_args()
 
@@ -118,6 +118,14 @@ def main():
     print("\nDetected quantities:")
     for col in df.columns:
         print(" ", col)
+
+    if args.min_step is not None:
+        n_before = len(df)
+        df = df[df["Step"] >= args.min_step].reset_index(drop=True)
+        print(f"Skipped {n_before - len(df)} data points with Step < {args.min_step}")
+
+    if df.empty:
+        raise RuntimeError("No data left after applying --min-step filter")
 
     plot_timeseries(df)
 
