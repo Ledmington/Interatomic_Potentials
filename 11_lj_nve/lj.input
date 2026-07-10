@@ -15,6 +15,8 @@ dump mydump all custom 100 lj.lammpstraj id type x y z radius
 thermo       100
 thermo_style custom step temp pe ke etotal
 
+minimize 1e-6 1e-8 1000 10000
+
 timestep 0.001
 
 fix mynve all nve
