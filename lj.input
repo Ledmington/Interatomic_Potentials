@@ -18,5 +18,5 @@ thermo_style custom step temp pe ke etotal
 timestep 0.001
 
 fix mynve all nve
-run 100000
+run 200000
 unfix mynve

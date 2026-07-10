@@ -1,25 +1,22 @@
-units lj
+units      lj
 atom_style ellipsoid
-dimension 2
-boundary p p p
+dimension  2
+boundary   p p p
 
-region       myregion block 0 60 0 60 -1 1
+region       myregion block 0 100 0 100 -1 1
 create_box   1 myregion
-create_atoms 1 random 486 123456 myregion overlap 2.0
-
+create_atoms 1 random 2000 123456 myregion overlap 3.0
 set          type 1 shape 3.0 1 1
 set          group all quat/random 123456
 
-pair_style   gayberne 1.0 1.0 2.0 4.0
-pair_coeff   * *   3.0 1.0   5.0 5.0 1.0   5.0 5.0 1.0
+pair_style gayberne 1.0 1.0 2.0 4.0
+pair_coeff * *   3.0 1.0   5.0 5.0 1.0   5.0 5.0 1.0
 
-neighbor     1.0 bin
+thermo 100
+thermo_style custom step temp pe ke etotal
 
-thermo 10
-thermo_style custom step pe etotal
-
-compute      mycompute all property/atom quatw quati quatj quatk shapex shapey shapez
-dump mydump all custom 100 prova.lammpstraj id type x y z c_mycompute[*]
+compute     mycompute all property/atom quatw quati quatj quatk shapex shapey shapez
+dump        mydump all custom 100 gb.lammpstraj id type x y z c_mycompute[*]
 dump_modify mydump &
             colname c_mycompute[1] quatw &
             colname c_mycompute[2] quati &
@@ -29,13 +26,10 @@ dump_modify mydump &
             colname c_mycompute[6] shapey &
             colname c_mycompute[7] shapez
 
-minimize 1e-6 1e-8 1000 10000
-
-thermo 100
-thermo_style custom step temp pe etotal press vol density
+minimize 1e-6 1e-8 10000 100000
 
 timestep 0.001
 
-fix mynpt all npt/asphere temp 0.6 0.6 $(100.0*dt) iso 6.0 6.0 $(1000.0*dt)
-run 100000
-unfix mynpt
+fix mynve all nve/asphere
+run 200000
+unfix mynve
