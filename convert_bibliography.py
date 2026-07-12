@@ -70,7 +70,7 @@ def format_reference(entry):
     first_author = get_first_author_surname(entry.get("author", "Unknown"))
     citation_key = f"{surname_for_citation(first_author)}{year}"
 
-    ref = f'{citation_key}. {authors}. "{title}"'
+    ref = f'**{citation_key}**. {authors}. "{title}"'
 
     if journal:
         ref += f". *{journal}*"
