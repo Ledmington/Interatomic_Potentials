@@ -1,6 +1,20 @@
 import bibtexparser
 
 
+def surname_for_citation(surname):
+    """
+    Convert surnames into citation-key format.
+
+    Examples:
+        Smith -> Smith
+        de Miguel -> DeMiguel
+        van der Waals -> VanDerWaals
+        De Luca -> DeLuca
+    """
+    parts = surname.strip().split()
+    return "".join(part.capitalize() for part in parts)
+
+
 def get_first_author_surname(author_field):
     """
     Extract first author's surname from BibTeX author field.
@@ -54,8 +68,7 @@ def format_reference(entry):
 
     # Citation key: Surname + Year
     first_author = get_first_author_surname(entry.get("author", "Unknown"))
-
-    citation_key = f"{first_author}{year}"
+    citation_key = f"{surname_for_citation(first_author)}{year}"
 
     ref = f'{citation_key}. {authors}. "{title}"'
 
