@@ -23,6 +23,6 @@ fix mynvt all nvt temp 1.0 0.01 $(100.0*dt)
 run 100000
 unfix mynvt
 
-fix mynve all nve
+fix mynvt all nvt temp 0.01 0.01 $(100.0*dt)
 run 100000
-unfix mynve
+unfix mynvt
