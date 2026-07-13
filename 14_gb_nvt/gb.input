@@ -34,6 +34,6 @@ fix mynvt all nvt/asphere temp 1.0 0.01 $(100.0*dt)
 run 100000
 unfix mynvt
 
-fix mynve all nve/asphere
+fix mynvt all nvt/asphere temp 0.01 0.01 $(100.0*dt)
 run 100000
-unfix mynve
+unfix mynvt
