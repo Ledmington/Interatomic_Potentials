@@ -90,6 +90,13 @@ def generate_bibliography(input_bib):
     with open(input_bib, encoding="utf-8") as f:
         bib = bibtexparser.load(f)
 
+    # Sort entries alphabetically by first author's surname
+    bib.entries.sort(
+        key=lambda entry: get_first_author_surname(
+            entry.get("author", "Unknown")
+        ).lower()
+    )
+
     references = []
 
     for entry in bib.entries:
