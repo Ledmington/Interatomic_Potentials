@@ -26,9 +26,9 @@ dump_modify mydump &
             colname c_mycompute[6] shapey &
             colname c_mycompute[7] shapez
 
-minimize 1e-6 1e-8 1000 10000
+minimize 1e-8 1e-8 10000 100000
 
-timestep 0.001
+timestep 0.0005
 
 fix mynve all nve/asphere
 run 200000
